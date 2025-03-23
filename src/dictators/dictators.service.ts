@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDictatorDto } from './dto/create-dictator.dto';
 import { UpdateDictatorDto } from './dto/update-dictator.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Dictator } from './entities/dictator.entity';
 
 @Injectable()
 export class DictatorsService {
-  create(createDictatorDto: CreateDictatorDto) {
-    return 'This action adds a new dictator';
+  constructor(
+    @InjectRepository(Dictator)
+    private dictatorsRepository: Repository<Dictator>,
+  ) {}
+
+  async create(createDictatorDto: CreateDictatorDto) {
+    const newDictator = this.dictatorsRepository.create(createDictatorDto);
+    await this.dictatorsRepository.save(newDictator);
+    return newDictator;
   }
 
   findAll() {
-    return `This action returns all dictators`;
+    const dictators = this.dictatorsRepository.find();
+    return dictators;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dictator`;
+  findOne(id: string) {
+    const dictator = this.dictatorsRepository.findOneBy({id:id});
+    if(!dictator){
+      throw new Error("Dictator not found");
+    }
+    return dictator;
   }
 
-  update(id: number, updateDictatorDto: UpdateDictatorDto) {
-    return `This action updates a #${id} dictator`;
-  }
+  async update(id: string, updateDictatorDto: UpdateDictatorDto) {
+      const battle = await this.dictatorsRepository.preload({id:id,...this.dictatorsRepository});
+      if(!battle){
+        throw new NotFoundException(`Battle ${id} not found`);
+      }
+      await this.dictatorsRepository.save(battle);
+      return battle;
+    }
+  
 
-  remove(id: number) {
-    return `This action removes a #${id} dictator`;
+  remove(id: string) {
+    const dictator = this.findOne(id);
+    this.dictatorsRepository.delete({id:id});
+    return dictator;
   }
 }

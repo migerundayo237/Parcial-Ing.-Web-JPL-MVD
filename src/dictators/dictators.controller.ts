@@ -19,16 +19,16 @@ export class DictatorsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.dictatorsService.findOne(+id);
+    return this.dictatorsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDictatorDto: UpdateDictatorDto) {
-    return this.dictatorsService.update(+id, updateDictatorDto);
+    return this.dictatorsService.update(id, updateDictatorDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.dictatorsService.remove(+id);
+    return this.dictatorsService.remove(id);
   }
 }
