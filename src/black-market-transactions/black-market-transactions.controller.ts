@@ -19,16 +19,16 @@ export class BlackMarketTransactionsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.blackMarketTransactionsService.findOne(+id);
+    return this.blackMarketTransactionsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBlackMarketTransactionDto: UpdateBlackMarketTransactionDto) {
-    return this.blackMarketTransactionsService.update(+id, updateBlackMarketTransactionDto);
+    return this.blackMarketTransactionsService.update(id, updateBlackMarketTransactionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.blackMarketTransactionsService.remove(+id);
+    return this.blackMarketTransactionsService.remove(id);
   }
 }

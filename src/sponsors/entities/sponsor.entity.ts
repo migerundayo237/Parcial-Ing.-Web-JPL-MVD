@@ -4,13 +4,10 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export class Sponsor {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
   @Column()
   company_name: string;
-
   @Column()
   donated_items: string;
-
-  @Column({ type: 'uuid' })
+  @Column('uuid')
   preferred_fighter: string;
 }
