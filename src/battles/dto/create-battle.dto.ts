@@ -1,4 +1,4 @@
-import { IsString, IsBoolean } from "class-validator";
+import { IsString, IsBoolean, IsOptional } from "class-validator";
 
 export class CreateBattleDto {
     @IsString()
@@ -6,8 +6,15 @@ export class CreateBattleDto {
     @IsString()
     contestant_2: string;
     @IsString()
-    injuries: string;
+    @IsOptional()
+    winner?: string;
+    @IsString()
+    @IsOptional()
+    injuries?: string;
     @IsBoolean()
-    death_occurred: boolean;
-    date: Date;
+    @IsOptional()
+    death_occurred?: boolean;
+    @IsString()
+    @IsOptional()
+    date?: Date;
 }

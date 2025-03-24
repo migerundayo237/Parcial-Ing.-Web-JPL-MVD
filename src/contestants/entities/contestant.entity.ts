@@ -1,12 +1,13 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Status{
-    ALIVE = "Alive",
-    DEAD = "Dead",
-    ESCAPED = "Escaped",
-    FREE = "Free"
+    ALIVE = "alive",
+    DEAD = "dead",
+    ESCAPED = "escaped",
+    FREE = "free"
 }
 
+@Entity()
 export class Contestant {
     @PrimaryGeneratedColumn("uuid")
     id: string;
