@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSponsorDto } from './dto/create-sponsor.dto';
 import { UpdateSponsorDto } from './dto/update-sponsor.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Sponsor } from './entities/sponsor.entity';
 
 @Injectable()
 export class SponsorsService {
-  create(createSponsorDto: CreateSponsorDto) {
-    return 'This action adds a new sponsor';
+  
+  constructor(
+    @InjectRepository(Sponsor)
+    private sponsorRepository: Repository<Sponsor>,
+  ) {}
+
+  async create(createSponsorDto: CreateSponsorDto) {
+    const newSponsor = this.sponsorRepository.create(createSponsorDto);
+    await this.sponsorRepository.save(newSponsor);
+    return newSponsor;
   }
 
   findAll() {
-    return `This action returns all sponsors`;
+    const sponsors = this.sponsorRepository.find();
+    return sponsors;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sponsor`;
+  findOne(id: string) {
+    const sponsor = this.sponsorRepository.findOneBy({id:id});
+    if(!sponsor){
+      throw new Error("Sponsor not found");
+    }
+    return sponsor;
   }
 
-  update(id: number, updateSponsorDto: UpdateSponsorDto) {
-    return `This action updates a #${id} sponsor`;
+  async update(id: string, updateSponsorDto: UpdateSponsorDto) {
+    const sponsor = await this.sponsorRepository.preload({id:id,...updateSponsorDto});
+    if(!sponsor){
+      throw new NotFoundException(`Sponsor ${id} not found`);
+    }
+    await this.sponsorRepository.save(sponsor);
+    return sponsor;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} sponsor`;
+  remove(id: string) {
+    const sponsor = this.findOne(id);
+    this.sponsorRepository.delete(id);
+    return sponsor;
   }
 }
